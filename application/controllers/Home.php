@@ -1,82 +1,32 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Home extends CI_Controller {
-	public function __construct(){
-		parent::__construct();
-		$this->load->model('Mdl_question');
-		if(!$this->session->userdata('user')){
-			redirect('login');
-		}
-	}
-
-	public function index()
-	{
-		$this->load->view('header');
-		$arr["user"]=$this->session->userdata('user');
-		$this->load->view('vw_home',$arr);
-		$this->load->view('footer');
-	}
-
-	public function dashboard(){
-		$this->load->view('header');
-		$arr["user"]=$this->session->userdata('user');
-		$this->load->view('vw_dashboard',$arr);
-		$this->load->view('footer');
-	}
-
-	public function logout(){
-		$this->session->unset_userdata('user');
-        redirect ("login");
-	}
-
-	public function addquestions(){
-		$this->load->view('header');
-		$arr["user"]=$this->session->userdata('user');
-		$this->load->view('vw_question',$arr);
-		$this->load->view('footer');
-	}
-
-	public function addq(){
-		$flag=$this->Mdl_question->insertQuestionAndAnswers();
-		if($flag != "success"){
-			$flag="ERROR !";
-		}
-		echo $this->sendJson(array("message"=>$flag));
+    public function __construct($config="rest") {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
+        parent::__construct();
+        $this->load->model('authenticate/Mdl_authenticate');
+        //$this->load->library('session');
+        if(! $this->Mdl_authenticate->sessionCheck()){
+            redirect("authenticate");
+        }
     }
-
-	public function getAllQuestions(){
-		if(!$this->session->userdata('user')){
-			redirect('login');
-		}else{
-			$flag=$this->Mdl_question->getQuestion();
-			echo $flag;
-		}
-	}
-
-	public function myquestions(){
-		$this->load->view('header');
-		$arr["user"]=$this->session->userdata('user');
-		$this->load->view('vw_myquestions',$arr);
-		$this->load->view('footer');
-	}
-	public function lmquestions(){
-		$flag=$this->Mdl_question->listmyquestions();
-		echo $flag;
-	}
-	function updatequestion($qid){
-		if(!$this->session->userdata('user')){
-			redirect('login');
-		}else{
-			$flag=$this->Mdl_question->updateQ($qid);
-			echo $flag;
-		}
-	}
-	function deletequestion(){
-
-	}
-
-
-	private function sendJson($data) {
-	  $this->output->set_header('Content-Type: application/json; charset=utf-8')->set_output(json_encode($data));
+    function logout(){
+        $this->session->unset_userdata('mcqusername');
+        $this->session->unset_userdata('mcquseremail');
+        // remove all session variables
+        session_unset();
+        // destroy the session
+        session_destroy();
+        redirect("authenticate");
+    }
+    
+	public function index(){
+		$this->load->view('vw_header',array("heading"=>"Home"));
+		$this->load->view('vw_navbar',array("user"=>$_SESSION["mcqusername"]));
+		$this->load->view('vw_home');
+		$this->load->view('vw_footer');
 	}
 }
