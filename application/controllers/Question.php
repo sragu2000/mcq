@@ -23,7 +23,8 @@ class Question extends CI_Controller {
     function insertquestion(){
         $question=$this->input->post('questionText');
         $answers=$this->input->post('encodedAnswers');
-        $flag=$this->Mdl_question->addquestion($question,$answers);
+        $questionSetName=$this->input->post('questionSetName');
+        $flag=$this->Mdl_question->addquestion($question,$answers,$questionSetName);
         $this->sendJson(array("message"=>$flag["message"], "result"=>$flag["result"]));
     }
 	public function index(){

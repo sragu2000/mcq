@@ -12,29 +12,36 @@ class Authenticate extends CI_Controller {
             redirect("home");
         }
     }
+
 	public function index(){
         $this->load->view('vw_header',array("heading"=>"Login"));
 		$this->load->view('authenticate/vw_login');
         $this->load->view('vw_footer');
 	}
+
     public function login(){
         $this->index();
     }
+
     public function signup(){
         $this->load->view('vw_header',array("heading"=>"Signup"));
 		$this->load->view('authenticate/vw_signup');
         $this->load->view('vw_footer');
     }
+
     public function validateLogin(){
         $email = $this->input->post('email');
         $password = $this->input->post('password');
         $flag=$this->Mdl_authenticate->validateLoginMdl($email,$password);
         $this->sendJson(array("message"=>$flag["message"], "result"=>$flag["result"], "user"=>$flag["user"]));
+        //to show name under nav bar
         $this->session->set_userdata("mcqusername",$flag["user"]);
+        //primary session 
         $this->session->set_userdata("mcquseremail",$email);
+        //used in adding questions and answers part |  to uniquely identify user
         $this->session->set_userdata("useruniqueid",$email.'_'.session_id());
-
     }
+
     public function validateSignup(){
         $email = $this->input->post('email');
         $password = $this->input->post('password');
