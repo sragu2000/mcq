@@ -24,4 +24,33 @@ class Mdl_question extends CI_Model {
             return array("message"=>"Failed! Try again later","result"=>false);
         }
     }
+    function listQuestionTopics(){
+        $user=$this->session->userdata('mcquseremail');
+        $val=$this->db->query("SELECT questionset as topic FROM questions WHERE user='$user' GROUP BY questionset")->result();
+        return json_encode($val,true);
+    }
+
+    // function listQuestionUnderTopics($topic){
+    //     $user=$this->session->userdata('mcquseremail');
+    //     $ques=$this->db->query("SELECT * from questions WHERE questionset='$topic'")->result();
+    //     $ans=$this->db->query("SELECT * from questions WHERE questionset='$topic'")->result();
+    //     return json_encode($val,true);
+    // }
+    
+    function deleteTopic($topic){
+        if($this->db->query("DELETE FROM questions WHERE questionset='$topic'")){
+            return array("message"=>"Topic Deleted Sucessfully","result"=>true);
+        }else{
+            return array("message"=>"Can't Delete Topic","result"=>false);
+        }
+    }
+    function editTopic($oldtopic,$newtopic){
+        $newtopic=urldecode($newtopic);
+        $oldtopic=urldecode($oldtopic);
+        if($this->db->query("UPDATE questions SET questionset='$newtopic' WHERE questionset='$oldtopic'")){
+            return array("message"=>"Topic Edited Sucessfully","result"=>true);
+        }else{
+            return array("message"=>"Can't Edit Topic","result"=>false);
+        }
+    }
 }

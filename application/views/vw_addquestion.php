@@ -40,6 +40,13 @@
 
 </div>
 <script type="text/javascript">
+    var topic="<?php echo $topic; ?>";
+    console.log(topic);
+    if(topic != ""){
+        $("#questionSetName").val(topic);
+        $("#questionSetName").prop('disabled', true); 
+    }
+
     ansCount=1;
     function addans(){
         var htmlText=`

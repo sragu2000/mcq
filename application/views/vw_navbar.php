@@ -21,7 +21,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="<?php echo base_url('question/addquestion'); ?>">Add Question</a></li>
-            <li><a class="dropdown-item" href="#">My Questions</a></li>
+            <li><a class="dropdown-item" href="<?php echo base_url('question/myquestions'); ?>">My Questions</a></li>
           </ul>
         </li>
         <!-- <li class="nav-item">

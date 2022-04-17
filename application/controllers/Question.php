@@ -14,10 +14,45 @@ class Question extends CI_Controller {
             redirect("authenticate");
         }
     }
-    function addquestion(){
+    function deletequestiontopic($topic){
+        $flag=$this->Mdl_question->deleteTopic($topic);
+        $this->session->set_flashdata('messageBack', $flag["message"]);
+        redirect("question/myquestions");
+    }
+    function editquestiontopic($oldtopic,$newtopic){
+        $flag=$this->Mdl_question->editTopic($oldtopic,$newtopic);
+        $this->session->set_flashdata('messageBack', $flag["message"]);
+        redirect("question/myquestions");
+    }
+    function myquestions(){
+        $this->load->view('vw_header',array("heading"=>"My Questions"));
+        if($this->session->has_userdata('messageBack')!=NULL){
+            $message=$this->session->userdata('messageBack');
+            $this->session->unset_userdata('messageBack');
+        }else{
+            $message="";
+        }
+		$this->load->view('vw_navbar',array("user"=>$_SESSION["mcqusername"],"message"=>$message));
+		$this->load->view('vw_myquestions');
+		$this->load->view('vw_footer');
+    }
+    function listmytopics(){
+        //function will return question topics in json
+        echo $this->Mdl_question->listQuestionTopics();
+    }
+
+    // function listquestionundertopic($topic){
+    //     //function will return question under topics in json
+    //     $topic=urldecode($topic);
+    //     echo $this->Mdl_question->listQuestionUnderTopics($topic);
+    // }
+
+    
+    function addquestion($topic=''){
         $this->load->view('vw_header',array("heading"=>"Add Question"));
 		$this->load->view('vw_navbar',array("user"=>$_SESSION["mcqusername"]));
-		$this->load->view('vw_addquestion');
+        $data["topic"]=urldecode($topic);
+		$this->load->view('vw_addquestion',$data);
 		$this->load->view('vw_footer');
     }
     function insertquestion(){
@@ -27,6 +62,7 @@ class Question extends CI_Controller {
         $flag=$this->Mdl_question->addquestion($question,$answers,$questionSetName);
         $this->sendJson(array("message"=>$flag["message"], "result"=>$flag["result"]));
     }
+    // ------------------------------------------------------
 	public function index(){
 		$this->load->view('errors/index.html');
 	}
