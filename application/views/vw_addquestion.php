@@ -8,7 +8,9 @@
     </style>
     <form id="ques">
         <!-- Question -->
-        <textarea id="questext" placeholder="write your question" class="form-control rows=3" required></textarea>
+        <div id="toolbar"></div>
+        <div id="editor" style="height:100px"></div>
+        <!-- <textarea id="questext" placeholder="write your question" class="form-control rows=3" required></textarea> -->
         <p></p>
         <!-- Ans 1 -->
         <div class="row">
@@ -16,7 +18,7 @@
                 <center><input type="checkbox" name="answers" id="chk_1" class="answer form-check-input" /></center>
             </div>
             <div class="col-11">
-                <input type="text" class="form-control" id="ans_1" required /><br>
+                <input type="text" class="form-control" id="ans_1" placeholder="Answer 1" required /><br>
             </div>
         </div>
         <!-- Ans 2 -->
@@ -25,7 +27,7 @@
                 <center><input type="checkbox" name="answers" id="chk_2" class="answer form-check-input" /></center>
             </div>
             <div class="col-11">
-                <input type="text" class="form-control" id="ans_2" required /><br>
+                <input type="text" class="form-control" id="ans_2" placeholder="Answer 2" required /><br>
             </div>
         </div>
         <!-- Ans 3 -->
@@ -34,7 +36,7 @@
                 <center><input type="checkbox" name="answers" id="chk_3" class="answer form-check-input" /></center>
             </div>
             <div class="col-11">
-                <input type="text" class="form-control" id="ans_3" required /><br>
+                <input type="text" class="form-control" id="ans_3" placeholder="Answer 3" required /><br>
             </div>
         </div>
         <!-- Ans 4 -->
@@ -43,7 +45,7 @@
                 <center><input type="checkbox" name="answers" id="chk_4" class="answer form-check-input" /></center>
             </div>
             <div class="col-11">
-                <input type="text" class="form-control" id="ans_4" required /><br>
+                <input type="text" class="form-control" id="ans_4" placeholder="Answer 4" required /><br>
             </div>
         </div>
         <!-- Ans 5 -->
@@ -52,7 +54,7 @@
                 <center><input type="checkbox" name="answers" id="chk_5" class="answer form-check-input" /></center>
             </div>
             <div class="col-11">
-                <input type="text" class="form-control" id="ans_5" required /><br>
+                <input type="text" class="form-control" id="ans_5" placeholder="Answer 5" required /><br>
             </div>
         </div>
         <!-- Submit and Clear -->
@@ -68,6 +70,25 @@
 
 </div>
 <script type="text/javascript">
+    var toolbarOptions =[
+        [{ header: [1, 2, false] }],
+        ['bold', 'italic', 'underline','strike'],
+        [ 'blockquote','code-block'],
+        [{'list':'ordered'},{'list':'bullet'}],
+        [{'script':'sub'},{'script':'super'}],
+        ['link','formula','image','video'],
+        [{'color':[]},{'background':[]}],
+        [{'font':[]}],
+        [{'align':[]}],
+    ];
+    var quill = new Quill('#editor', {
+        modules: {
+            toolbar: toolbarOptions
+        },
+        placeholder: 'Type Your Question Here...',
+        theme: 'snow'
+    });
+
     $(document).on("submit", "#ques", (e) => {
         e.preventDefault();
         var answers = [];
@@ -89,12 +110,11 @@
                 });
             }
         });
-        console.log(answers);
         console.log(JSON.stringify(answers));
-
+        console.log(JSON.stringify(quill.getContents()));
 
         var toServer = new FormData();
-        toServer.append('questionText', $("#questext").val());
+        toServer.append('questionText', JSON.stringify(quill.getContents()));
         toServer.append('encodedAnswers', JSON.stringify(answers));
         fetch("<?php echo base_url('question/insertquestion'); ?>", {
                 method: 'POST',

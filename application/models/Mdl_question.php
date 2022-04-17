@@ -3,15 +3,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mdl_question extends CI_Model {
 	function addquestion($question,$answers){
+        header('Content-Type: application/json');
         $answers=json_decode($answers,true);
-        //add question first
+
+        $timestamp=(new DateTime())->getTimestamp();
+        $uniqueid=$this->session->userdata('useruniqueid').$timestamp;
+
         $user=$this->session->userdata('mcquseremail');
-        $date=time();
-        if($this->db->query("insert into questions(question, user, timestamp) values('$question','$user','$date')")){
 
+        if($this->db->query("INSERT INTO questions(useridentificationid,question,user) VALUES('$uniqueid','$question','$user')")){
+            //get question id
+            $qid=$this->db->query("SELECT * FROM questions WHERE useridentificationid='$uniqueid'")->first_row()->questionid;
+            foreach($answers as $key => $value){
+                $answerText=$value["answerText"];
+                $state=$value["state"];
+                $this->db->query("INSERT INTO answers(useridentificationid,answer,astate,questionid,user) VALUES('$uniqueid','$answerText','$state','$qid','$user')");
+            }
+            return array("message"=>"Question and Answers Added Sucessfully","result"=>false);
         }else{
-
+            return array("message"=>"Failed! Try again later","result"=>false);
         }
-        //return array("message"=>"Question added successfully","result"=>true);
     }
 }

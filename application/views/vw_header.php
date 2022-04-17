@@ -12,5 +12,14 @@
     <script src="<?php echo base_url('bootstrap5/js/bootstrap.bundle.min.js');?>"></script>
     <!-- Font Awesome-->
     <script src="https://kit.fontawesome.com/eeb684813e.js" crossorigin="anonymous"></script>
+    <!-- Quill -->
+    <!-- Main Quill library -->
+    <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+    <!-- Theme included stylesheets -->
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+
 </head>
 <body>

@@ -32,6 +32,8 @@ class Authenticate extends CI_Controller {
         $this->sendJson(array("message"=>$flag["message"], "result"=>$flag["result"], "user"=>$flag["user"]));
         $this->session->set_userdata("mcqusername",$flag["user"]);
         $this->session->set_userdata("mcquseremail",$email);
+        $this->session->set_userdata("useruniqueid",$email.'_'.session_id());
+
     }
     public function validateSignup(){
         $email = $this->input->post('email');
