@@ -24,18 +24,19 @@ class Mdl_question extends CI_Model {
             return array("message"=>"Failed! Try again later","result"=>false);
         }
     }
+
     function listQuestionTopics(){
         $user=$this->session->userdata('mcquseremail');
         $val=$this->db->query("SELECT questionset as topic FROM questions WHERE user='$user' GROUP BY questionset")->result();
         return json_encode($val,true);
     }
 
-    // function listQuestionUnderTopics($topic){
-    //     $user=$this->session->userdata('mcquseremail');
-    //     $ques=$this->db->query("SELECT * from questions WHERE questionset='$topic'")->result();
-    //     $ans=$this->db->query("SELECT * from questions WHERE questionset='$topic'")->result();
-    //     return json_encode($val,true);
-    // }
+    function listQuestionUnderTopics($topic){
+        $user=$this->session->userdata('mcquseremail');
+        $queryText="select questions.question as question, group_concat(answers.answer separator '__sep__') as answers from questions, answers where answers.questionid=questions.questionid and questions.user='$user' and questionset='$topic' group by answers.questionid";
+        $val=$this->db->query($queryText)->result();
+        return json_encode($val,true);
+    }
     
     function deleteTopic($topic){
         if($this->db->query("DELETE FROM questions WHERE questionset='$topic'")){
@@ -44,6 +45,7 @@ class Mdl_question extends CI_Model {
             return array("message"=>"Can't Delete Topic","result"=>false);
         }
     }
+    
     function editTopic($oldtopic,$newtopic){
         $newtopic=urldecode($newtopic);
         $oldtopic=urldecode($oldtopic);

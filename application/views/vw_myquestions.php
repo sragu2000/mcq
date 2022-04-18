@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-md-4"><h5>${item.topic}</h5></div>    
                         <div class="col-md-2">
-                            <a href="" class="btn btn-outline-primary form-control">View Questions</a> 
+                            <a href="<?php echo base_url('question/listquestionundertopic/')?>${item.topic}" class="btn btn-outline-primary form-control">View Questions</a> 
                         </div>
                         <div class="col-md-2">
                             <a href="<?php echo base_url('question/addquestion/${item.topic}') ?>" class="btn btn-outline-success form-control">Add Questions</a>

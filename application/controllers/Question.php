@@ -14,16 +14,19 @@ class Question extends CI_Controller {
             redirect("authenticate");
         }
     }
+
     function deletequestiontopic($topic){
         $flag=$this->Mdl_question->deleteTopic($topic);
         $this->session->set_flashdata('messageBack', $flag["message"]);
         redirect("question/myquestions");
     }
+
     function editquestiontopic($oldtopic,$newtopic){
         $flag=$this->Mdl_question->editTopic($oldtopic,$newtopic);
         $this->session->set_flashdata('messageBack', $flag["message"]);
         redirect("question/myquestions");
     }
+
     function myquestions(){
         $this->load->view('vw_header',array("heading"=>"My Questions"));
         if($this->session->has_userdata('messageBack')!=NULL){
@@ -36,18 +39,18 @@ class Question extends CI_Controller {
 		$this->load->view('vw_myquestions');
 		$this->load->view('vw_footer');
     }
+
     function listmytopics(){
         //function will return question topics in json
         echo $this->Mdl_question->listQuestionTopics();
     }
 
-    // function listquestionundertopic($topic){
-    //     //function will return question under topics in json
-    //     $topic=urldecode($topic);
-    //     echo $this->Mdl_question->listQuestionUnderTopics($topic);
-    // }
+    function listquestionundertopic($topic){
+        //function will return question under topics in json
+        $topic=urldecode($topic);
+        echo $this->Mdl_question->listQuestionUnderTopics($topic);
+    }
 
-    
     function addquestion($topic=''){
         $this->load->view('vw_header',array("heading"=>"Add Question"));
 		$this->load->view('vw_navbar',array("user"=>$_SESSION["mcqusername"]));
@@ -55,6 +58,7 @@ class Question extends CI_Controller {
 		$this->load->view('vw_addquestion',$data);
 		$this->load->view('vw_footer');
     }
+
     function insertquestion(){
         $question=$this->input->post('questionText');
         $answers=$this->input->post('encodedAnswers');
@@ -62,11 +66,13 @@ class Question extends CI_Controller {
         $flag=$this->Mdl_question->addquestion($question,$answers,$questionSetName);
         $this->sendJson(array("message"=>$flag["message"], "result"=>$flag["result"]));
     }
-    // ------------------------------------------------------
+
 	public function index(){
 		$this->load->view('errors/index.html');
 	}
+
    private function sendJson($data) {
      $this->output->set_header('Content-Type: application/json; charset=utf-8')->set_output(json_encode($data));
    }
+   
 }
